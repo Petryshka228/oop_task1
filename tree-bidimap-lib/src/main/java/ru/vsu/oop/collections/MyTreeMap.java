@@ -79,4 +79,73 @@ public class MyTreeMap<K extends Comparable<K>, V> {
         return null;
     }
 
+    // Возвращает список ключей по возрастанию (inorder обход).
+
+    public List<K> keysInOrder() {
+        List<K> res = new ArrayList<>();
+        inorder(root, res);
+        return res;
+    }
+
+    private void inorder(Node<K, V> node, List<K> out) {
+        if (node == null) return;
+        inorder(node.left, out);
+        out.add(node.key);
+        inorder(node.right, out);
+    }
+
+    public V remove(K key) {
+        Box<V> old = new Box<>();
+        root = removeRec(root, key, old);
+        if (old.hasValue) {
+            size--;
+            return old.value;
+        }
+        return null;
+    }
+
+    private static class Box<V> {
+        V value;
+        boolean hasValue;
+    }
+
+    private Node<K, V> removeRec(Node<K, V> node, K key, Box<V> old) {
+        if (node == null) return null;
+
+        int cmp = key.compareTo(node.key);
+
+        if (cmp < 0) {
+            node.left = removeRec(node.left, key, old);
+            return node;
+        }
+        if (cmp > 0) {
+            node.right = removeRec(node.right, key, old);
+            return node;
+        }
+
+        old.value = node.value;
+        old.hasValue = true;
+
+        if (node.left == null) return node.right;
+        if (node.right == null) return node.left;
+
+        Node<K, V> min = findMin(node.right);
+        node.key = min.key;
+        node.value = min.value;
+        node.right = removeMin(node.right);
+        return node;
+    }
+
+    private Node<K, V> findMin(Node<K, V> node) {
+        Node<K, V> cur = node;
+        while (cur.left != null) cur = cur.left;
+        return cur;
+    }
+
+    private Node<K, V> removeMin(Node<K, V> node) {
+        if (node.left == null) return node.right;
+        node.left = removeMin(node.left);
+        return node;
+    }
+
 }
