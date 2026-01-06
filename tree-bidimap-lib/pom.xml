@@ -28,6 +28,18 @@
 
     <build>
         <plugins>
+            <!-- фиксируем кодировку исходников, чтобы русские комментарии не ломали сборку -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
             <!-- чтобы JUnit 5 нормально запускался -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
